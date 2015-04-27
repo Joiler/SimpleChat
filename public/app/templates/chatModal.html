@@ -1,0 +1,43 @@
+<div class="privateChatPage">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()"><span
+                aria-hidden="true">&times;</span></button>
+        <div class="privateChatPageName">
+            <span>Private conversation with</span>
+            <span class="recepientName">{{userRecepient.username}}</span>
+        </div>
+    </div>
+    <div class="panel loadHistoryLink">
+        <a href="" ng-click="loadHistory()" class="pull-right">Load message history</a>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-body messagesPanel">
+            <ul class="media-list">
+                <li class="media chatMessage" ng-class="message.isOwn ? 'ownChatMessage' : 'foreignChatMessage'"
+                    ng-repeat="message in userRecepient.messages">
+                    <div class="media-body">
+                        <div class="media">
+                            <div class="media-body">
+                                <div class="chatMessageContent" ng-bind-html="message.text | breakFilter"></div>
+                                <br class="chatMessageSeparator"/>
+                                <small class="text-muted">{{message.sender}} | {{message.date.toLocaleString()}}</small>
+                                <hr/>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-footer">
+            <div class="input-group">
+                <textarea rows="2" class="form-control" placeholder="Enter Message"
+                          ng-model="currentPrivateMessageText"></textarea>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" ng-click="sendPrivateMessage()"
+                            ng-disabled="currentPrivateMessageText.length == 0">SEND
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

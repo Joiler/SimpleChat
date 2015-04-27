@@ -1,0 +1,142 @@
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+/*header panel styles */
+
+.headerPanel .siteName {
+    font-size: 22px;
+}
+
+.headerPanel .logStatusDiv {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.headerPanel .logStatusDiv .logStatus {
+    color: #9d9d9d;
+}
+
+/*login page styles */
+
+.loginPage {
+    margin-top: 30px;
+}
+
+.loginPage .form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.loginPage .inviteText {
+    font-size: 50px;
+    color: grey;
+    text-align: center;
+}
+
+.loginPage .chatIcon {
+    width: 100%;
+    height: 100%;
+}
+
+/*chat page styles */
+
+.chatPage {
+    padding-top: 40px;
+}
+
+.chatPage .messagesPanel {
+    height: 500px;
+    overflow-y: scroll;
+}
+
+.chatPage .usersPanel {
+    height: 573px;
+    overflow-y: scroll;
+}
+
+/*chat page user panel styles */
+
+.usersPanel .userInfo {
+    overflow: hidden;
+}
+
+.usersPanel .userInfo .userLogo {
+    max-height: 40px;
+}
+
+.usersPanel .userInfo .userStatus {
+    float: left;
+    margin-top: 10px;
+    margin-right: 3px;
+    max-height: 10px;
+}
+
+.usersPanel .userInfo .userName {
+    float: left;
+}
+
+.usersPanel .userInfo .newMessagesSpan {
+    float: left;
+    margin: 4px 5px 0px 1px;
+    padding: 4px;
+    vertical-align: top;
+    color: #45688E;
+    background: #D5DDE5;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 12px;
+}
+
+.usersPanel .userInfo .visibleMessagesCount {
+    visibility: visible;
+    cursor: pointer;
+}
+
+.usersPanel .userInfo .unvisibleMessagesCount {
+    visibility: hidden;
+}
+/*chat page message panel styles*/
+
+.messagesPanel .ownChatMessage {
+    background-color: lightgreen;
+}
+
+.messagesPanel .foreignChatMessage {
+    background-color: lightpink;
+}
+
+.messagesPanel .chatMessageContent {
+    font-weight: bolder;
+}
+
+.messagesPanel hr {
+    margin-bottom: 0px;
+}
+
+/* private chat page (modal window) styles */
+
+.privateChatPage .privateChatPageName {
+    font-size: 26px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.privateChatPage .privateChatPageName .recepientName {
+    color: red;
+}
+
+.privateChatPage .loadHistoryLink {
+    margin-right: 20px;
+}
+
+.privateChatPage .messagesPanel {
+    height: 400px;
+    overflow-y: scroll;
+}

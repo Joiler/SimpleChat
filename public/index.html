@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Simple chat</title>
+    <link href="/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="/vendor/socket.io/socket.io.js"></script>
+    <script src="/vendor/angular/angular.js"></script>
+    <script src="/vendor/angular/angular-route.js"></script>
+    <script src="/vendor/angular/angular-sanitize.js"></script>
+    <script src="/vendor/angular.ui/angular.ui.bootstrap.js"></script>
+    <script src="/vendor/angular.socket.io/socket.js"></script>
+
+    <script src="/app/app.js"></script>
+    <script src="/app/controllers/chatController.js"></script>
+    <script src="/app/controllers/chatModalController.js"></script>
+    <script src="/app/controllers/loginController.js"></script>
+    <script src="/app/filters/breakFilter.js"></script>
+    <script src="/app/services/authentificationService.js"></script>
+    <script src="/app/services/chatSocketService.js"></script>
+    <script src="/app/services/notificationService.js"></script>
+</head>
+<body ng-app="simpleChatApp">
+<nav class="navbar navbar-inverse navbar-fixed-top headerPanel">
+    <div class="container">
+        <div class="navbar-header">
+            <span class="navbar-text siteName">Simple chat</span>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <div class="navbar-right logStatusDiv">
+                <span class="logStatus" ng-hide="$root.userInfo && $root.userInfo.username">You aren't signed in</span>
+                <span class="logStatus" ng-show="$root.userInfo && $root.userInfo.username">Hello, {{$root.userInfo.username}}!</span>
+                <a href="" ng-click="$root.logout()" ng-show="$root.userInfo && $root.userInfo.username">Log out</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<ng-view></ng-view>
+</body>
+</html>

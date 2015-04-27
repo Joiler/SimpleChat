@@ -1,0 +1,72 @@
+<div class="container chatPage">
+    <div class="row ">
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    CHAT MESSAGES
+                </div>
+                <div class="panel-body messagesPanel">
+                    <ul class="media-list">
+                        <li class="media chatMessage" ng-class="message.isOwn ? 'ownChatMessage' : 'foreignChatMessage'"
+                            ng-repeat="message in chatMessages">
+                            <div class="media-body">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <div class="chatMessageContent" ng-bind-html="message.text | breakFilter"></div>
+                                        <br class="chatMessageSeparator"/>
+                                        <small class="text-muted">{{message.sender}} |
+                                            {{message.date.toLocaleString()}}
+                                        </small>
+                                        <hr/>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <textarea rows="2" class="form-control" placeholder="Enter Message"
+                                  ng-model="currentPublicMessageText"></textarea>
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" ng-click="sendPublicMessage()"
+                                    ng-disabled="currentPublicMessageText.length == 0">SEND
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    USERS
+                </div>
+                <div class="panel-body usersPanel">
+                    <ul class="media-list">
+                        <li class="media" ng-repeat="user in chatUsers">
+                            <div class="media-body">
+                                <div class="media userInfo">
+                                    <a class="pull-left" href="" ng-click="openModalWindow(user)">
+                                        <img class="media-object img-circle userLogo" src="../../images/user.png"/>
+                                    </a>
+
+                                    <div class="media-body">
+                                        <span class="newMessagesSpan"
+                                              ng-class="user.unreadMessagesCount > 0 ? 'visibleMessagesCount' : 'unvisibleMessagesCount'"
+                                              ng-click="openModalWindow(user)">
+                                            <span>+{{user.unreadMessagesCount}}</span>
+                                        </span>
+                                        <img class="media-object img-circle userStatus"
+                                             ng-src="../../images/{{user.isOnline ? 'online' : 'busy'}}.png"/>
+                                        <h5 class="userName">{{user.username}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

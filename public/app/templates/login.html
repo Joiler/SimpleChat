@@ -1,0 +1,35 @@
+<div class="container loginPage">
+    <div class="row">
+        <h1 class="inviteText">We invite you to our chat!</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <image class="chatIcon" src="/images/chat.png"></image>
+        </div>
+        <div class="col-md-6">
+            <form name="loginForm" novalidate class="form-signin" ng-submit="signIn(loginForm)">
+                <h2 class="form-signin-heading">Please sign in</h2>
+
+                <div class="form-group">
+                    <label for="inputLogin" class="sr-only">Login address</label>
+                    <input type="text" name="inputLogin" id="inputLogin" class="form-control"
+                           placeholder="Login address" required autofocus="" ng-model="userCridentials.username">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" name="inputPassword" id="inputPassword" class="form-control"
+                           placeholder="Password" required ng-minlength="6" ng-model="userCridentials.password">
+                </div>
+                <div class="form-group" ng-show="isAutoruzedFail">
+                    <label class="text-danger">Incorrect cridentials. Please, check!</label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="loginForm.$invalid">Sign
+                    in
+                </button>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <image class="chatIcon" src="/images/chat.png"></image>
+        </div>
+    </div>
+</div>
