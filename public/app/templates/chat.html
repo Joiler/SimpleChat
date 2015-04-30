@@ -44,7 +44,7 @@
                 </div>
                 <div class="panel-body usersPanel">
                     <ul class="media-list">
-                        <li class="media" ng-repeat="user in chatUsers">
+                        <li class="media" ng-repeat="user in chatUsers | orderBy: ['-isOnline', '+username']">
                             <div class="media-body">
                                 <div class="media userInfo">
                                     <a class="pull-left" href="" ng-click="openModalWindow(user)">

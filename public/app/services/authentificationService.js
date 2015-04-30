@@ -2,6 +2,8 @@ angular.module('simpleChatApp')
     .factory('authentificationService',
     ['$http', '$q',
         function ($http, $q) {
+            'use strict';
+
             var login = function (userName, password) {
                 var deferred = $q.defer();
 

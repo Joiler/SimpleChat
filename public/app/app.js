@@ -1,5 +1,7 @@
 var app = angular.module('simpleChatApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'btford.socket-io'])
     .config(['$routeProvider', function ($routeProvider) {
+        'use strict';
+
         var logCheckOnChatPage = function ($q, $rootScope, $location, authentificationService) {
             var defered = $q.defer();
             if ($rootScope.userInfo && $rootScope.userInfo.username) {
@@ -64,12 +66,33 @@ var app = angular.module('simpleChatApp', ['ngRoute', 'ngSanitize', 'ui.bootstra
             });
     }]);
 
-app.run(['$rootScope', '$location', 'authentificationService', 'chatSocketService',
-    function ($rootScope, $location, authentificationService, chatSocketService) {
+app.run(['$rootScope', '$location', 'authentificationService', 'chatSocketService', 'localStorageService',
+    function ($rootScope, $location, authentificationService, chatSocketService, localStorageService) {
+
+        var onLogOut = function(event) {
+            if (event) {
+                if (event.key === 'isLogged' && event.newValue === 'false') {
+                    $rootScope.userInfo = undefined;
+                    chatSocketService.disconnect();
+                    $rootScope.$apply(function() {
+                        $location.path('/login');
+                    });
+                }
+                else if (event.key === 'isLogged' && event.newValue === 'true') {
+                    $rootScope.$apply(function() {
+                        $location.path('/chat');
+                    });
+                }
+            }
+        };
+
+        localStorageService.addListener(onLogOut);
+
         $rootScope.logout = function () {
             chatSocketService.disconnect();
             authentificationService.logout().then(function (data) {
                 if (data.success === true) {
+                    localStorageService.setItem('isLogged', false);
                     $rootScope.userInfo = undefined;
                     $location.path('/login');
                 }

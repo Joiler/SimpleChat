@@ -45,6 +45,15 @@ a {
     height: 100%;
 }
 
+.loginPage .form-signin input.ng-invalid.ng-dirty {
+    background-color: lightpink;
+}
+
+.loginPage .form-signin input.ng-valid.ng-dirty {
+    background-color: lightgreen;
+}
+
+
 /*chat page styles */
 
 .chatPage {

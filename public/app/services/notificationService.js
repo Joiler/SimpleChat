@@ -2,6 +2,8 @@ angular.module('simpleChatApp')
     .factory('notificationService',
     ['$timeout',
         function ($timeout) {
+            'use strict';
+
             var showNewMessageNotification = function (username) {
                 function displayNotification() {
                     var notification = new Notification('New message', {

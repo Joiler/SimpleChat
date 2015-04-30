@@ -1,5 +1,6 @@
 var LocalStrategy = require('passport-local').Strategy;
 var UserModel = require('../DAL/chatDAL').UserModel;
+var validator = require('validator');
 
 module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
@@ -18,6 +19,7 @@ module.exports = function (passport) {
                 passReqToCallback: true
             },
             function (req, username, password, done) {
+                username = validator.escape(username).trim();
                 process.nextTick(function () {
                     UserModel.findOne({username: username}, function (err, user) {
                         if (err) {

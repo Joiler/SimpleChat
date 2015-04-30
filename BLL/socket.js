@@ -1,6 +1,7 @@
 var passportSocketIo = require('passport.socketio');
 var cookieParser = require('cookie-parser');
 var sessionConfig = require('../configs/session');
+var validator = require('validator');
 var PublicMessageModel = require('../DAL/chatDAL').PublicMessageModel;
 var PrivateMessageModel = require('../DAL/chatDAL').PrivateMessageModel;
 var UserModel = require('../DAL/chatDAL').UserModel;
@@ -25,18 +26,18 @@ var manageConnection = function (io, socket) {
     }
 
     function processConnectedUser() {
-        socket.emit('user list', generateUsersListToClient(username));
+        socket.emit('user:list', generateUsersListToClient(username));
         if (!allUsers[username]) {
             //new register user
             allUsers[username] = {isOnline: true, sockets: [socket]};
-            socket.broadcast.emit('new user', {username: username, isOnline: true});
+            socket.broadcast.emit('user:new', {username: username, isOnline: true});
         } else {
             allUsers[username].sockets.push(socket);
             if (allUsers[username].isOnline) {
                 //user open chat twice
             } else {
                 allUsers[username].isOnline = true;
-                socket.broadcast.emit('update user status', {username: username, isOnline: true});
+                socket.broadcast.emit('user:update', {username: username, isOnline: true});
             }
         }
     }
@@ -46,7 +47,7 @@ var manageConnection = function (io, socket) {
             .sort({'date': 'ascending'})
             .exec(function (err, messages) {
                 if (messages.length > 0) {
-                    socket.emit('unread messages', messages);
+                    socket.emit('privateMessage:unread', messages);
                 }
             });
     }
@@ -59,23 +60,27 @@ var managePublicChatEvents = function (io, socket) {
     function processChatMessageEvent(message) {
         var date = new Date();
         message.date = date;
+        message.text = validator.escape(message.text).trim();
+        message.sender = validator.escape(message.sender).trim();
         var publicMessage = new PublicMessageModel();
         publicMessage.sender = message.sender;
         publicMessage.text = message.text;
-        publicMessage.date = message.date
+        publicMessage.date = message.date;
         publicMessage.save(function (err) {
             if (err) {
                 throw err;
             }
         });
-        io.sockets.emit('chat message', message);
+        io.sockets.emit('chatMessage:received', message);
     }
 
-    socket.on('chat message', processChatMessageEvent);
+    socket.on('chatMessage:sent', processChatMessageEvent);
 }
 
 var managePrivateChatEvents = function (io, socket) {
     function processReadMessageEvent(message) {
+        message.sender = validator.escape(message.sender).trim();
+        message.recepient = validator.escape(message.recepient).trim();
         PrivateMessageModel.update({
                 sender: message.sender,
                 recepient: message.recepient,
@@ -91,17 +96,20 @@ var managePrivateChatEvents = function (io, socket) {
     function processPrivateMessageEvent(message) {
         var date = new Date();
         message.date = date;
+        message.text = validator.escape(message.text).trim();
+        message.sender = validator.escape(message.sender).trim();
+        message.recepient = validator.escape(message.recepient).trim();
         var privateMessage = new PrivateMessageModel();
         privateMessage.sender = message.sender;
         privateMessage.text = message.text;
         privateMessage.date = message.date;
         privateMessage.recepient = message.recepient;
         allUsers[message.sender].sockets.forEach(function (privateChatSocket) {
-            privateChatSocket.emit('private message', message);
+            privateChatSocket.emit('privateMessage:received', message);
         });
         privateMessage.isRead = false;
         allUsers[message.recepient].sockets.forEach(function (privateChatSocket) {
-            privateChatSocket.emit('private message', message);
+            privateChatSocket.emit('privateMessage:received', message);
         });
         privateMessage.save(function (err) {
             if (err) {
@@ -111,6 +119,8 @@ var managePrivateChatEvents = function (io, socket) {
     }
 
     function processPrivateHistoryEvent(message) {
+        message.sender = validator.escape(message.sender).trim();
+        message.recepient = validator.escape(message.recepient).trim();
         PrivateMessageModel.find()
             .or([
                 {$and: [{sender: message.sender}, {recepient: message.recepient}]},
@@ -121,7 +131,7 @@ var managePrivateChatEvents = function (io, socket) {
                 if (err) {
                     throw err;
                 }
-                socket.emit('private history', {
+                socket.emit('privateHistory:received', {
                     messages: messages,
                     sender: message.sender,
                     recepient: message.recepient
@@ -129,9 +139,9 @@ var managePrivateChatEvents = function (io, socket) {
             });
     }
 
-    socket.on('read message', processReadMessageEvent);
-    socket.on('private message', processPrivateMessageEvent);
-    socket.on('private history', processPrivateHistoryEvent);
+    socket.on('privateMessage:read', processReadMessageEvent);
+    socket.on('privateMessage:sent', processPrivateMessageEvent);
+    socket.on('privateHistory:sent', processPrivateHistoryEvent);
 }
 
 var manageDisconnectEvent = function (io, socket) {
@@ -142,7 +152,7 @@ var manageDisconnectEvent = function (io, socket) {
             allUsers[username].sockets.splice(index, 1);
             if (allUsers[username].sockets.length === 0) {
                 allUsers[username].isOnline = false;
-                socket.broadcast.emit('update user status', {username: username, isOnline: false});
+                socket.broadcast.emit('user:update', {username: username, isOnline: false});
             }
         }
     }

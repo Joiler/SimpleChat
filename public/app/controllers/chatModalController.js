@@ -1,6 +1,8 @@
 angular.module('simpleChatApp')
     .controller('chatModalController', ['$scope', '$rootScope', '$modalInstance', 'chatSocketService', 'userRecepient',
         function ($scope, $rootScope, $modalInstance, chatSocketService, userRecepient) {
+            'use strict';
+            
             $scope.userRecepient = userRecepient;
             $scope.currentPrivateMessageText = '';
 
@@ -10,12 +12,12 @@ angular.module('simpleChatApp')
                     recepient: $scope.userRecepient.username,
                     text: $scope.currentPrivateMessageText
                 }
-                chatSocketService.emit('private message', message);
+                chatSocketService.emit('privateMessage:sent', message);
                 $scope.currentPrivateMessageText = '';
             }
 
             $scope.loadHistory = function () {
-                chatSocketService.emit('private history',
+                chatSocketService.emit('privateHistory:sent',
                     {
                         sender: $rootScope.userInfo.username,
                         recepient: $scope.userRecepient.username
@@ -30,7 +32,7 @@ angular.module('simpleChatApp')
 
             var init = function () {
                 if ($scope.userRecepient.unreadMessagesCount > 0) {
-                    chatSocketService.emit('read message', {
+                    chatSocketService.emit('privateMessage:read', {
                         sender: $scope.userRecepient.username,
                         recepient: $rootScope.userInfo.username
                     });

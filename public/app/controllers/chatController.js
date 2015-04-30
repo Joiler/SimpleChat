@@ -1,6 +1,8 @@
 angular.module('simpleChatApp')
     .controller('chatController', ['$scope', '$rootScope', '$location', '$modal', 'chatSocketService', 'notificationService',
         function ($scope, $rootScope, $location, $modal, chatSocketService, notificationService) {
+            'use strict';
+
             $scope.chatUsers = [];
             $scope.chatMessages = [];
             $scope.currentPublicMessageText = '';
@@ -10,7 +12,7 @@ angular.module('simpleChatApp')
                     sender: $rootScope.userInfo.username,
                     text: $scope.currentPublicMessageText
                 }
-                chatSocketService.emit('chat message', message);
+                chatSocketService.emit('chatMessage:sent', message);
                 $scope.currentPublicMessageText = '';
             }
 
@@ -41,7 +43,7 @@ angular.module('simpleChatApp')
             }
 
             var addUserEventListners = function () {
-                chatSocketService.addListener('user list', function (users) {
+                chatSocketService.addListener('user:list', function (users) {
                     for (var i = 0, len = users.length; i < len; i++) {
                         users[i].messages = [];
                         users[i].unreadMessagesCount = 0;
@@ -49,20 +51,20 @@ angular.module('simpleChatApp')
                     $scope.chatUsers = users;
                 });
 
-                chatSocketService.addListener('new user', function (user) {
+                chatSocketService.addListener('user:new', function (user) {
                     user.messages = [];
                     user.unreadMessagesCount = 0;
                     $scope.chatUsers.push(user);
                 });
 
-                chatSocketService.addListener('update user status', function (user) {
+                chatSocketService.addListener('user:update', function (user) {
                     var updatedUser = getUserByUsername(user.username);
                     updatedUser.isOnline = user.isOnline;
                 });
             }
 
             var addPublicChatEventListners = function () {
-                chatSocketService.addListener('chat message', function (message) {
+                chatSocketService.addListener('chatMessage:received', function (message) {
                     message.date = new Date(message.date);
                     message.isOwn = message.sender === $rootScope.userInfo.username;
                     $scope.chatMessages.unshift(message);
@@ -70,7 +72,7 @@ angular.module('simpleChatApp')
             }
 
             var addPrivateChatEventListners = function () {
-                chatSocketService.addListener('private message', function (message) {
+                chatSocketService.addListener('privateMessage:received', function (message) {
                     message.date = new Date(message.date);
                     message.isOwn = message.sender === $rootScope.userInfo.username;
                     var linkedUser;
@@ -82,7 +84,7 @@ angular.module('simpleChatApp')
                             linkedUser.unreadMessagesCount++;
                             notificationService.showNewMessageNotification(message.sender);
                         } else {
-                            chatSocketService.emit('read message', {
+                            chatSocketService.emit('privateMessage:read', {
                                 sender: message.sender,
                                 recepient: message.recepient
                             });
@@ -91,7 +93,7 @@ angular.module('simpleChatApp')
                     linkedUser.messages.unshift(message);
                 })
 
-                chatSocketService.addListener('unread messages', function (messages) {
+                chatSocketService.addListener('privateMessage:unread', function (messages) {
                     var senderUser;
                     for (var i = 0, len = messages.length; i < len; i++) {
                         messages[i].isOwn = false;
@@ -102,7 +104,7 @@ angular.module('simpleChatApp')
                     }
                 })
 
-                chatSocketService.addListener('private history', function (data) {
+                chatSocketService.addListener('privateHistory:received', function (data) {
                     var messages = data.messages;
                     for (var i = 0, len = messages.length; i < len; i++) {
                         messages[i].isOwn = messages[i].sender === $rootScope.userInfo.username;

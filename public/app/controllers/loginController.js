@@ -1,6 +1,8 @@
 angular.module('simpleChatApp')
-    .controller('loginController', ['$scope', '$rootScope', '$location', 'authentificationService',
-        function ($scope, $rootScope, $location, authentificationService) {
+    .controller('loginController', ['$scope', '$rootScope', '$location', 'authentificationService', 'localStorageService',
+        function ($scope, $rootScope, $location, authentificationService, localStorageService) {
+            'use strict';
+
             $scope.userCridentials = {};
             $scope.isAutoruzedFail = false;
 
@@ -9,6 +11,7 @@ angular.module('simpleChatApp')
                     $scope.isAutoruzedFail = false;
                     authentificationService.login($scope.userCridentials.username, $scope.userCridentials.password).then(function (data) {
                         if (data.success === true) {
+                            localStorageService.setItem('isLogged', true);
                             $rootScope.userInfo = {username: $scope.userCridentials.username};
                             $location.path('/chat');
                         }
