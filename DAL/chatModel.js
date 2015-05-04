@@ -1,8 +1,15 @@
+'use strict';
+
 var mongoose = require('mongoose');
 var databaseConfig = require('../configs/database');
 var bcrypt = require('bcrypt-nodejs');
 
-mongoose.connect(databaseConfig.url);
+mongoose.connect(databaseConfig.url, function(err, res) {
+    if (err) {
+        console.log('Connection to Mongodb failed. Connection status:' + err.message);
+    }
+
+});
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -64,7 +71,8 @@ var publicMessageModel = mongoose.model('PublicMessage', publicMessageSchema);
 var privateMessageModel = mongoose.model('PrivateMessage', privateMessageSchema);
 
 module.exports = {
-    UserModel: userModel,
-    PublicMessageModel: publicMessageModel,
-    PrivateMessageModel: privateMessageModel
+    userModel: userModel,
+    publicMessageModel: publicMessageModel,
+    privateMessageModel: privateMessageModel,
+    mongooseConnection: userModel.db
 };

@@ -1,9 +1,10 @@
+'use strict';
+
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
-var UserModel = require('../DAL/chatDAL').UserModel;
 
 var mStore = new mongoStore({
-    mongooseConnection: UserModel.db,
+    mongooseConnection: require('../DAL/chatModel').mongooseConnection,
     collection: 'session'
 });
 

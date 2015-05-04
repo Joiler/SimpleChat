@@ -6,6 +6,12 @@ angular.module('simpleChatApp')
             $scope.userRecepient = userRecepient;
             $scope.currentPrivateMessageText = '';
 
+            $scope.$on('logout', function() {
+                $scope.userRecepient.isOpenModal = false;
+                $modalInstance.close();
+                $scope.$destroy();
+            })
+
             $scope.sendPrivateMessage = function () {
                 var message = {
                     sender: $rootScope.userInfo.username,

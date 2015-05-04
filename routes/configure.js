@@ -1,3 +1,5 @@
+'use strict';
+
 var routes = require('./index');
 
 module.exports = function (app) {

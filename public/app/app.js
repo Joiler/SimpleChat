@@ -76,6 +76,7 @@ app.run(['$rootScope', '$location', 'authentificationService', 'chatSocketServic
                     chatSocketService.disconnect();
                     $rootScope.$apply(function() {
                         $location.path('/login');
+                        $rootScope.$broadcast('logout');
                     });
                 }
                 else if (event.key === 'isLogged' && event.newValue === 'true') {
